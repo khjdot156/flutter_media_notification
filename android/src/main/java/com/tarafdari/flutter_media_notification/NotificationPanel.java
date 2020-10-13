@@ -6,10 +6,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.IBinder;
 import android.support.v4.media.session.MediaSessionCompat;
+import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 import androidx.media.session.MediaButtonReceiver;
@@ -19,6 +21,18 @@ public class NotificationPanel extends Service {
     public static int NOTIFICATION_ID = 1;
     public  static final String CHANNEL_ID = "flutter_media_notification";
     public  static final String MEDIA_SESSION_TAG = "flutter_media_notification";
+
+
+    static Bitmap loadArtBitmapFromFile(String path) {
+        try {
+
+            return BitmapFactory.decodeFile(path);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.d("MEDIA_SESSION_TAG", e.toString());
+            return null;
+        }
+    }
 
     @Override
     public void onCreate() {
@@ -30,6 +44,7 @@ public class NotificationPanel extends Service {
         boolean isPlaying = intent.getBooleanExtra("isPlaying", true);
         String title = intent.getStringExtra("title");
         String author = intent.getStringExtra("author");
+        String avatar = intent.getStringExtra("avatar");
 
         createNotificationChannel();
 
@@ -42,6 +57,13 @@ public class NotificationPanel extends Service {
         if(isPlaying){
             iconPlayPause=R.drawable.baseline_pause_black_48;
             titlePlayPause="play";
+        }
+
+        Bitmap bmp = BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_stat_music_note);
+        if(avatar != null)
+        {
+            Log.d("MEDIA_SESSION_TAG", avatar);
+            bmp = loadArtBitmapFromFile(avatar);
         }
 
         Intent toggleIntent = new Intent(this, NotificationReturnSlot.class)
@@ -82,9 +104,9 @@ public class NotificationPanel extends Service {
                 .setPriority(NotificationCompat.PRIORITY_MAX)
                 .setContentTitle(title)
                 .setContentText(author)
-                .setSubText(title)
+//                .setSubText(title)
                 .setContentIntent(selectPendingIntent)
-                .setLargeIcon(BitmapFactory.decodeResource(this.getResources(), R.drawable.ic_stat_music_note))
+                .setLargeIcon(bmp)
                 .build();
 
         startForeground(NOTIFICATION_ID, notification);

@@ -32,8 +32,9 @@ public class FlutterMediaNotificationPlugin implements MethodCallHandler {
       case "showNotification":
         final String title = call.argument("title");
         final String author = call.argument("author");
+        final String avatar = call.argument("avatar");
         final boolean isPlaying = call.argument("isPlaying");
-        showNotification(title, author, isPlaying);
+        showNotification(title, author, avatar, isPlaying);
         result.success(null);
         break;
       case "hideNotification":
@@ -61,11 +62,12 @@ public class FlutterMediaNotificationPlugin implements MethodCallHandler {
     });
   }
 
-  static void showNotification(String title, String author, boolean play) {
+  static void showNotification(String title, String author, String avatar, boolean play) {
 
     Intent serviceIntent = new Intent(registrar.context(), NotificationPanel.class);
     serviceIntent.putExtra("title", title);
     serviceIntent.putExtra("author", author);
+    serviceIntent.putExtra("avatar", avatar);
     serviceIntent.putExtra("isPlaying", play);
 
     registrar.context().startService(serviceIntent);
