@@ -19,6 +19,7 @@ public class NotificationReturnSlot extends BroadcastReceiver {
             case "toggle":
                 String title = intent.getStringExtra("title");
                 String author = intent.getStringExtra("author");
+                String avatar = intent.getStringExtra("avatar");
                 boolean play = intent.getBooleanExtra("play",true);
 
                 if(play)
@@ -26,7 +27,7 @@ public class NotificationReturnSlot extends BroadcastReceiver {
                 else
                     FlutterMediaNotificationPlugin.callEvent("pause");
 
-                FlutterMediaNotificationPlugin.showNotification(title, author,play);
+                FlutterMediaNotificationPlugin.showNotification(title, author, avatar, play);
                 break;
             case "select":
                 Intent closeDialog = new Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
